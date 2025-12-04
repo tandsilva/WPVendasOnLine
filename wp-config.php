@@ -24,23 +24,31 @@ if (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROT
     $_SERVER['HTTPS'] = 'on';
 }
 
-// Credenciais do MySQL (Railway - host público com porta)
+// Credenciais do MySQL (Railway - TCP Proxy)
 define('DB_NAME',     get_env('MYSQL_DATABASE', get_env('WORDPRESS_DB_NAME', 'railway')));
 define('DB_USER',     get_env('MYSQLUSER', get_env('MYSQL_USER', get_env('WORDPRESS_DB_USER', 'root'))));
 define('DB_PASSWORD', get_env('MYSQLPASSWORD', get_env('MYSQL_PASSWORD', get_env('WORDPRESS_DB_PASSWORD'))));
 
-// Para Railway: usa conexão privada interna se disponível
-$db_host = get_env('MYSQL_PRIVATE_URL') ? parse_url(get_env('MYSQL_PRIVATE_URL'), PHP_URL_HOST) : get_env('MYSQLHOST', get_env('WORDPRESS_DB_HOST', 'localhost'));
-$db_port = get_env('MYSQL_PRIVATE_URL') ? parse_url(get_env('MYSQL_PRIVATE_URL'), PHP_URL_PORT) : get_env('MYSQLPORT', '3306');
+// Host e porta do MySQL (Railway TCP Proxy)
+$db_host = get_env('MYSQLHOST', 'localhost');
+$db_port = get_env('MYSQLPORT', '3306');
 
-// Se DB_HOST vier com formato "host:porta", separa
-if (strpos($db_host, ':') !== false) {
-    list($db_host, $db_port) = explode(':', $db_host, 2);
+// Se WORDPRESS_DB_HOST vier com formato "host:porta", separa
+$wp_db_host = get_env('WORDPRESS_DB_HOST');
+if ($wp_db_host && strpos($wp_db_host, ':') !== false) {
+    list($db_host, $db_port) = explode(':', $wp_db_host, 2);
 }
 
-// IMPORTANTE: Força conexão TCP para banco remoto  
-// Adiciona 'p:' antes do host para forçar conexão persistente TCP
+// Conexão TCP (SEM persistent - pode causar "gone away")
 define('DB_HOST', $db_host . ':' . $db_port);
+
+// Aumenta timeouts do MySQL para Railway
+if (!defined('DB_CONNECTION_TIMEOUT')) {
+    define('DB_CONNECTION_TIMEOUT', 30);
+}
+if (!defined('MYSQL_CLIENT_FLAGS')) {
+    define('MYSQL_CLIENT_FLAGS', MYSQLI_CLIENT_SSL_DONT_VERIFY_SERVER_CERT);
+}
 
 // Charset/Collation
 define('DB_CHARSET',  'utf8mb4');
