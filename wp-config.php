@@ -1,4 +1,3 @@
-
 <?php
 /**
  * WordPress config para Railway (serviço dentro do mesmo projeto)
