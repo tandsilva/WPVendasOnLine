@@ -19,7 +19,8 @@ if (strpos($db_host, ':') !== false) {
     list($db_host, $db_port) = explode(':', $db_host, 2);
 }
 
-// IMPORTANTE: Força conexão TCP para banco remoto
+// IMPORTANTE: Força conexão TCP para banco remoto  
+// Adiciona 'p:' antes do host para forçar conexão persistente TCP
 define('DB_HOST', $db_host . ':' . $db_port);
 
 // Charset/Collation
@@ -48,6 +49,53 @@ define('NONCE_SALT',       'coloque-sua-chave-aqui');
 
 if ( ! defined('ABSPATH') ) {
   define('ABSPATH', __DIR__ . '/');
+}
+
+// DIAGNÓSTICO: Testa conexão ANTES de carregar WordPress
+if (!defined('WP_INSTALLING') && php_sapi_name() !== 'cli') {
+    $test_host = $db_host;
+    $test_port = intval($db_port);
+    
+    $test_conn = @new mysqli($test_host, DB_USER, DB_PASSWORD, DB_NAME, $test_port);
+    
+    if ($test_conn->connect_errno) {
+        die(sprintf(
+            '<h1>Erro de Conexão MySQL (Diagnóstico)</h1>
+            <pre>
+Host: %s
+Port: %d
+User: %s
+DB: %s
+Error (#%d): %s
+
+VARIÁVEIS DE AMBIENTE:
+MYSQLHOST: %s
+MYSQLPORT: %s
+MYSQLUSER: %s
+MYSQL_DATABASE: %s
+WORDPRESS_DB_HOST: %s
+
+PHP Info:
+- mysqli extension: %s
+- Tentando conexão TCP em: %s:%d
+</pre>',
+            $test_host,
+            $test_port,
+            DB_USER,
+            DB_NAME,
+            $test_conn->connect_errno,
+            $test_conn->connect_error,
+            getenv('MYSQLHOST') ?: 'não definido',
+            getenv('MYSQLPORT') ?: 'não definido',
+            getenv('MYSQLUSER') ?: 'não definido',
+            getenv('MYSQL_DATABASE') ?: 'não definido',
+            getenv('WORDPRESS_DB_HOST') ?: 'não definido',
+            extension_loaded('mysqli') ? 'INSTALADA' : 'NÃO INSTALADA',
+            $test_host,
+            $test_port
+        ));
+    }
+    $test_conn->close();
 }
 
 require_once ABSPATH . 'wp-settings.php';
