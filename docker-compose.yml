@@ -1,0 +1,15 @@
+version: "3.9"
+
+services:
+  wp-site:
+    image: wordpress:php8.2-apache
+    restart: always
+    ports:
+      - "8081:80"
+    environment:
+      WORDPRESS_DB_HOST: maglev.proxy.rlwy.net:12700
+      WORDPRESS_DB_USER: root
+      WORDPRESS_DB_PASSWORD: xofVyskEDcfZunTcWInESoltfnnXBMLx
+      WORDPRESS_DB_NAME: railway
+    volumes:
+      - ./wp-content:/var/www/html/wp-content

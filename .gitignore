@@ -1,0 +1,25 @@
+# Ignorar o diretório de uploads (imagens, mídia)
+wp-content/uploads/
+
+# Ignorar plugins que você não quer versionar
+wp-content/plugins/
+
+# Ignorar temas que você não está desenvolvendo
+wp-content/themes/nome-do-tema-que-nao-está-modificando/
+
+# Ignorar arquivos de cache
+wp-content/cache/
+wp-content/upgrade/
+wp-content/backups/
+
+# Arquivos de configuração sensíveis
+wp-config.php
+
+# Arquivos temporários do sistema
+*.log
+*.tmp
+*.bak
+*.swp
+
+# Node modules (se estiver usando algum build tool ou theme dev)
+node_modules/
