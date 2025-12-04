@@ -29,9 +29,9 @@ define('DB_NAME',     get_env('MYSQL_DATABASE', get_env('WORDPRESS_DB_NAME', 'ra
 define('DB_USER',     get_env('MYSQLUSER', get_env('MYSQL_USER', get_env('WORDPRESS_DB_USER', 'root'))));
 define('DB_PASSWORD', get_env('MYSQLPASSWORD', get_env('MYSQL_PASSWORD', get_env('WORDPRESS_DB_PASSWORD'))));
 
-// Para Railway: host e porta separados
-$db_host = get_env('MYSQLHOST', get_env('WORDPRESS_DB_HOST', 'localhost'));
-$db_port = get_env('MYSQLPORT', '3306');
+// Para Railway: usa conexão privada interna se disponível
+$db_host = get_env('MYSQL_PRIVATE_URL') ? parse_url(get_env('MYSQL_PRIVATE_URL'), PHP_URL_HOST) : get_env('MYSQLHOST', get_env('WORDPRESS_DB_HOST', 'localhost'));
+$db_port = get_env('MYSQL_PRIVATE_URL') ? parse_url(get_env('MYSQL_PRIVATE_URL'), PHP_URL_PORT) : get_env('MYSQLPORT', '3306');
 
 // Se DB_HOST vier com formato "host:porta", separa
 if (strpos($db_host, ':') !== false) {
