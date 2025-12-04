@@ -13,7 +13,7 @@ wp-content/upgrade/
 wp-content/backups/
 
 # Arquivos de configuração sensíveis
-wp-config.php
+
 
 # Arquivos temporários do sistema
 *.log
