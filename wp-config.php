@@ -56,50 +56,30 @@ if ( ! defined('ABSPATH') ) {
   define('ABSPATH', __DIR__ . '/');
 }
 
-// DIAGNÓSTICO: Testa conexão ANTES de carregar WordPress
+// AUTO-CRIAÇÃO DO BANCO: Garante que o banco existe antes de carregar o WordPress
 if (!defined('WP_INSTALLING') && php_sapi_name() !== 'cli') {
     $test_host = $db_host;
     $test_port = intval($db_port);
     
-    $test_conn = @new mysqli($test_host, DB_USER, DB_PASSWORD, DB_NAME, $test_port);
+    // Conecta sem especificar banco primeiro
+    $test_conn = @new mysqli($test_host, DB_USER, DB_PASSWORD, '', $test_port);
     
     if ($test_conn->connect_errno) {
         die(sprintf(
-            '<h1>Erro de Conexão MySQL (Diagnóstico)</h1>
-            <pre>
-Host: %s
-Port: %d
+            '<h1>Erro de Conexão MySQL</h1>
+            <pre>Não foi possível conectar ao servidor MySQL.
+Host: %s:%d
 User: %s
-DB: %s
-Error (#%d): %s
-
-VARIÁVEIS DE AMBIENTE:
-MYSQLHOST: %s
-MYSQLPORT: %s
-MYSQLUSER: %s
-MYSQL_DATABASE: %s
-WORDPRESS_DB_HOST: %s
-
-PHP Info:
-- mysqli extension: %s
-- Tentando conexão TCP em: %s:%d
-</pre>',
+Error: %s</pre>',
             $test_host,
             $test_port,
             DB_USER,
-            DB_NAME,
-            $test_conn->connect_errno,
-            $test_conn->connect_error,
-            get_env('MYSQLHOST', 'não definido'),
-            get_env('MYSQLPORT', 'não definido'),
-            get_env('MYSQLUSER', 'não definido'),
-            get_env('MYSQL_DATABASE', 'não definido'),
-            get_env('WORDPRESS_DB_HOST', 'não definido'),
-            extension_loaded('mysqli') ? 'INSTALADA' : 'NÃO INSTALADA',
-            $test_host,
-            $test_port
+            $test_conn->connect_error
         ));
     }
+    
+    // Cria o banco se não existir
+    $test_conn->query("CREATE DATABASE IF NOT EXISTS `" . DB_NAME . "` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci");
     $test_conn->close();
 }
 
