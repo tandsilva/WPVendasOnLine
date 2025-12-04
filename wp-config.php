@@ -1,9 +1,10 @@
 <?php
 
-define( 'DB_NAME', 'railway' );
-define( 'DB_USER', 'root' );
-define( 'DB_PASSWORD', 'xofVyskEDcfZunTcWInESoltfnnXBMLx' );
-define( 'DB_HOST', 'mysql.railway.internal:3306' );
+define('DB_NAME', getenv('MYSQL_DATABASE'));      // ok
+define('DB_USER', getenv('MYSQLUSER'));          // sem underline
+define('DB_PASSWORD', getenv('MYSQLPASSWORD'));  // sem underline
+define('DB_HOST', getenv('MYSQLHOST') . ':' . getenv('MYSQLPORT')); // host + porta
+
 define( 'DB_CHARSET', 'utf8mb4' );
 define( 'DB_COLLATE', '' );
 
