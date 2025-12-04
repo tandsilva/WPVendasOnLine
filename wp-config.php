@@ -3,9 +3,10 @@
  * WordPress configuration for Railway
  */
 
-define('DB_NAME', getenv('MYSQL_DATABASE'));          // railway
-define('DB_USER', getenv('MYSQLUSER'));               // root
-define('DB_PASSWORD', getenv('MYSQLPASSWORD'));       // senha do banco
+define( 'DB_NAME', getenv('MYSQL_DATABASE') );      // railway
+define( 'DB_USER', getenv('MYSQLUSER') );           // root
+define( 'DB_PASSWORD', getenv('MYSQLPASSWORD') );   // senha
+
 define('DB_HOST', getenv('MYSQLHOST') . ':' . getenv('MYSQLPORT')); // mysql.railway.internal:3306
 
 define('DB_CHARSET', 'utf8mb4');
