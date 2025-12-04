@@ -73,21 +73,4 @@ if ( ! defined('ABSPATH') ) {
   define('ABSPATH', __DIR__ . '/');
 }
 
-// AUTO-CRIAÇÃO DO BANCO: Garante que o banco existe antes de carregar o WordPress
-if (!defined('WP_INSTALLING') && php_sapi_name() !== 'cli') {
-    $test_host = $db_host;
-    $test_port = intval($db_port);
-    
-    // Conecta com timeout curto
-    ini_set('default_socket_timeout', 5);
-    
-    $test_conn = @mysqli_connect($test_host, DB_USER, DB_PASSWORD, '', $test_port);
-    
-    if ($test_conn) {
-        // Cria o banco se não existir (com tratamento de erro)
-        @mysqli_query($test_conn, "CREATE DATABASE IF NOT EXISTS `" . DB_NAME . "` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci");
-        @mysqli_close($test_conn);
-    }
-}
-
 require_once ABSPATH . 'wp-settings.php';
