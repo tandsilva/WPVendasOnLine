@@ -1,10 +1,15 @@
 
 <?php
-$host = getenv('MYSQLHOST') ?: getenv('WORDPRESS_DB_HOST');
-$port = intval(getenv('MYSQLPORT')) ?: 3306;
-$user = getenv('MYSQLUSER') ?: getenv('MYSQL_USER') ?: getenv('WORDPRESS_DB_USER');
-$pass = getenv('MYSQLPASSWORD') ?: getenv('MYSQL_PASSWORD') ?: getenv('WORDPRESS_DB_PASSWORD');
-$db   = getenv('MYSQL_DATABASE') ?: getenv('WORDPRESS_DB_NAME');
+// Função helper para ler env vars (Railway compatível)
+function get_env($key, $default = '') {
+    return $_ENV[$key] ?? $_SERVER[$key] ?? getenv($key) ?: $default;
+}
+
+$host = get_env('MYSQLHOST', get_env('WORDPRESS_DB_HOST'));
+$port = intval(get_env('MYSQLPORT', '3306'));
+$user = get_env('MYSQLUSER', get_env('MYSQL_USER', get_env('WORDPRESS_DB_USER')));
+$pass = get_env('MYSQLPASSWORD', get_env('MYSQL_PASSWORD', get_env('WORDPRESS_DB_PASSWORD')));
+$db   = get_env('MYSQL_DATABASE', get_env('WORDPRESS_DB_NAME'));
 
 // Separa host:porta se vier junto
 if (strpos($host, ':') !== false) {

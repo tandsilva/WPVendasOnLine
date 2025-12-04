@@ -5,14 +5,19 @@
  * Usando as variáveis WORDPRESS_DB_* sugeridas pela Railway.
  */
 
+// Função helper para ler variáveis de ambiente (Railway compatível)
+function get_env($key, $default = '') {
+    return $_ENV[$key] ?? $_SERVER[$key] ?? getenv($key) ?: $default;
+}
+
 // Credenciais do MySQL (Railway - host público com porta)
-define('DB_NAME',     getenv('MYSQL_DATABASE') ?: getenv('WORDPRESS_DB_NAME') ?: 'railway_db');
-define('DB_USER',     getenv('MYSQLUSER') ?: getenv('MYSQL_USER') ?: getenv('WORDPRESS_DB_USER') ?: 'root');
-define('DB_PASSWORD', getenv('MYSQLPASSWORD') ?: getenv('MYSQL_PASSWORD') ?: getenv('WORDPRESS_DB_PASSWORD'));
+define('DB_NAME',     get_env('MYSQL_DATABASE', get_env('WORDPRESS_DB_NAME', 'railway_db')));
+define('DB_USER',     get_env('MYSQLUSER', get_env('MYSQL_USER', get_env('WORDPRESS_DB_USER', 'root'))));
+define('DB_PASSWORD', get_env('MYSQLPASSWORD', get_env('MYSQL_PASSWORD', get_env('WORDPRESS_DB_PASSWORD'))));
 
 // Para Railway: host e porta separados
-$db_host = getenv('MYSQLHOST') ?: getenv('WORDPRESS_DB_HOST') ?: 'localhost';
-$db_port = getenv('MYSQLPORT') ?: '3306';
+$db_host = get_env('MYSQLHOST', get_env('WORDPRESS_DB_HOST', 'localhost'));
+$db_port = get_env('MYSQLPORT', '3306');
 
 // Se DB_HOST vier com formato "host:porta", separa
 if (strpos($db_host, ':') !== false) {
@@ -85,11 +90,11 @@ PHP Info:
             DB_NAME,
             $test_conn->connect_errno,
             $test_conn->connect_error,
-            getenv('MYSQLHOST') ?: 'não definido',
-            getenv('MYSQLPORT') ?: 'não definido',
-            getenv('MYSQLUSER') ?: 'não definido',
-            getenv('MYSQL_DATABASE') ?: 'não definido',
-            getenv('WORDPRESS_DB_HOST') ?: 'não definido',
+            get_env('MYSQLHOST', 'não definido'),
+            get_env('MYSQLPORT', 'não definido'),
+            get_env('MYSQLUSER', 'não definido'),
+            get_env('MYSQL_DATABASE', 'não definido'),
+            get_env('WORDPRESS_DB_HOST', 'não definido'),
             extension_loaded('mysqli') ? 'INSTALADA' : 'NÃO INSTALADA',
             $test_host,
             $test_port
