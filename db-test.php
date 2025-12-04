@@ -28,7 +28,17 @@ echo "Pass: " . (empty($pass) ? 'VAZIA!' : '****') . "\n\n";
 echo "Tentando conectar...\n";
 
 // Força conexão TCP especificando porta e socket=null
-$mysqli = @new mysqli($host, $user, $pass, $db, $port);
+set_error_handler(function($errno, $errstr) {
+    echo "PHP Error: $errstr\n";
+});
+
+$start = microtime(true);
+$mysqli = new mysqli($host, $user, $pass, $db, $port);
+$duration = round(microtime(true) - $start, 2);
+
+restore_error_handler();
+
+echo "Tempo de tentativa: {$duration}s\n\n";
 
 if ($mysqli->connect_errno) {
   echo "❌ FALHA: ({$mysqli->connect_errno}) {$mysqli->connect_error}\n";
