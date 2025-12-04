@@ -78,26 +78,16 @@ if (!defined('WP_INSTALLING') && php_sapi_name() !== 'cli') {
     $test_host = $db_host;
     $test_port = intval($db_port);
     
-    // Conecta sem especificar banco primeiro
-    $test_conn = @new mysqli($test_host, DB_USER, DB_PASSWORD, '', $test_port);
+    // Conecta com timeout curto
+    ini_set('default_socket_timeout', 5);
     
-    if ($test_conn->connect_errno) {
-        die(sprintf(
-            '<h1>Erro de Conexão MySQL</h1>
-            <pre>Não foi possível conectar ao servidor MySQL.
-Host: %s:%d
-User: %s
-Error: %s</pre>',
-            $test_host,
-            $test_port,
-            DB_USER,
-            $test_conn->connect_error
-        ));
+    $test_conn = @mysqli_connect($test_host, DB_USER, DB_PASSWORD, '', $test_port);
+    
+    if ($test_conn) {
+        // Cria o banco se não existir (com tratamento de erro)
+        @mysqli_query($test_conn, "CREATE DATABASE IF NOT EXISTS `" . DB_NAME . "` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci");
+        @mysqli_close($test_conn);
     }
-    
-    // Cria o banco se não existir
-    $test_conn->query("CREATE DATABASE IF NOT EXISTS `" . DB_NAME . "` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci");
-    $test_conn->close();
 }
 
 require_once ABSPATH . 'wp-settings.php';
