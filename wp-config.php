@@ -6,10 +6,21 @@
  */
 
 // Credenciais do MySQL (Railway - host público com porta)
-define('DB_NAME',     getenv('WORDPRESS_DB_NAME'));       // ex.: railway_db
-define('DB_USER',     getenv('WORDPRESS_DB_USER'));       // ex.: root
-define('DB_PASSWORD', getenv('WORDPRESS_DB_PASSWORD'));   // senha
-define('DB_HOST',     getenv('WORDPRESS_DB_HOST'));       // ex.: shinkansen.proxy.rlwy.net:17563
+define('DB_NAME',     getenv('MYSQL_DATABASE') ?: getenv('WORDPRESS_DB_NAME') ?: 'railway_db');
+define('DB_USER',     getenv('MYSQLUSER') ?: getenv('MYSQL_USER') ?: getenv('WORDPRESS_DB_USER') ?: 'root');
+define('DB_PASSWORD', getenv('MYSQLPASSWORD') ?: getenv('MYSQL_PASSWORD') ?: getenv('WORDPRESS_DB_PASSWORD'));
+
+// Para Railway: host e porta separados
+$db_host = getenv('MYSQLHOST') ?: getenv('WORDPRESS_DB_HOST') ?: 'localhost';
+$db_port = getenv('MYSQLPORT') ?: '3306';
+
+// Se DB_HOST vier com formato "host:porta", separa
+if (strpos($db_host, ':') !== false) {
+    list($db_host, $db_port) = explode(':', $db_host, 2);
+}
+
+// IMPORTANTE: Força conexão TCP para banco remoto
+define('DB_HOST', $db_host . ':' . $db_port);
 
 // Charset/Collation
 define('DB_CHARSET',  'utf8mb4');
