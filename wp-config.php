@@ -35,8 +35,11 @@ define('DB_COLLATE',  '');
 // Prefixo de tabelas
 $table_prefix = 'wp_';
 
-// Debug
-define('WP_DEBUG', false);
+// Debug - ATIVADO temporariamente para ver erros
+define('WP_DEBUG', true);
+define('WP_DEBUG_DISPLAY', true);
+define('WP_DEBUG_LOG', true);
+@ini_set('display_errors', 1);
 
 // (opcional) Reparar DB (remova depois de resolver)
 define('WP_ALLOW_REPAIR', true);
