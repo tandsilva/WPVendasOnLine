@@ -9,9 +9,15 @@ function get_env($key, $default = '') {
     return $_ENV[$key] ?? $_SERVER[$key] ?? getenv($key) ?: $default;
 }
 
-// URLs do WordPress - Usa domínio customizado
-define('WP_HOME', 'https://facilcompra.online');
-define('WP_SITEURL', 'https://facilcompra.online');
+// URLs do WordPress - Detecta automaticamente
+if (isset($_SERVER['HTTP_HOST'])) {
+    $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' || $_SERVER['SERVER_PORT'] == 443) ? "https://" : "http://";
+    define('WP_HOME', $protocol . $_SERVER['HTTP_HOST']);
+    define('WP_SITEURL', $protocol . $_SERVER['HTTP_HOST']);
+} else {
+    define('WP_HOME', 'https://facilcompra.online');
+    define('WP_SITEURL', 'https://facilcompra.online');
+}
 
 // Força HTTPS no Railway
 if (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https') {
