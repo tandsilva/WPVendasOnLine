@@ -25,7 +25,7 @@ if (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROT
 }
 
 // Credenciais do MySQL (Railway - host público com porta)
-define('DB_NAME',     get_env('MYSQL_DATABASE', get_env('WORDPRESS_DB_NAME', 'railway_db')));
+define('DB_NAME',     get_env('MYSQL_DATABASE', get_env('WORDPRESS_DB_NAME', 'railway')));
 define('DB_USER',     get_env('MYSQLUSER', get_env('MYSQL_USER', get_env('WORDPRESS_DB_USER', 'root'))));
 define('DB_PASSWORD', get_env('MYSQLPASSWORD', get_env('MYSQL_PASSWORD', get_env('WORDPRESS_DB_PASSWORD'))));
 
