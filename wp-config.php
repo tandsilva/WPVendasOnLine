@@ -9,6 +9,15 @@ function get_env($key, $default = '') {
     return $_ENV[$key] ?? $_SERVER[$key] ?? getenv($key) ?: $default;
 }
 
+// URLs do WordPress - Force a URL correta no Railway
+define('WP_HOME', 'https://wpvendasonline-production.up.railway.app');
+define('WP_SITEURL', 'https://wpvendasonline-production.up.railway.app');
+
+// Força HTTPS no Railway
+if (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https') {
+    $_SERVER['HTTPS'] = 'on';
+}
+
 // Credenciais do MySQL (Railway - host público com porta)
 define('DB_NAME',     get_env('MYSQL_DATABASE', get_env('WORDPRESS_DB_NAME', 'railway_db')));
 define('DB_USER',     get_env('MYSQLUSER', get_env('MYSQL_USER', get_env('WORDPRESS_DB_USER', 'root'))));
